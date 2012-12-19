@@ -5,4 +5,5 @@ gunicorn==0.16.1
 pymongo==2.4.1
 tornado==2.4.1
 wsgiref==0.1.2
-git+git://github.com/andreisavu/mongodb-log.git
+#git+git://github.com/andreisavu/mongodb-log.git
+git+git://github.com/baden/mongodb-log.git
