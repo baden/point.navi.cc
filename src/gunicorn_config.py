@@ -153,7 +153,7 @@ tmp_upload_dir = None
 #
 
 errorlog = '-'
-loglevel = 'info'
+loglevel = 'debug'
 accesslog = '-'
 
 #
