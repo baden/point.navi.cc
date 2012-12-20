@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -
 
+from zmq.eventloop import ioloop; ioloop.install()
+from zmq.eventloop.zmqstream import ZMQStream
+import zmq
+
 import os
 """
 here = os.path.dirname(os.path.abspath(__file__))
@@ -15,13 +19,16 @@ sys.path.append("../misc/virtenv/lib/python2.7/site-packages")
 print("virtualenv=", repr(virtualenv))
 """
 import tornado.options
-import tornado.ioloop
+#import tornado.ioloop
+from tornado.ioloop import IOLoop
 import tornado.web
 import platform
 from datetime import datetime, timedelta
 #import pymongo
 from pymongo import Connection
-from time import sleep
+import time
+#from time import sleep
+import signal
 import logging
 from mongolog.handlers import MongoHandler
 from struct import unpack, calcsize
@@ -30,6 +37,14 @@ from struct import unpack, calcsize
 IMEI_BLACK_LIST = ('test-BLACK', 'test-BLACK2')
 USE_BACKUP = True
 
+
+context = zmq.Context()
+publisher = context.socket(zmq.PUB)
+publisher.bind("ipc:///tmp/ws_sub")
+publish_stream = ZMQStream(publisher)
+
+
+#push_socket.send_pyobj(msg)
 
 #.to(host='mongodb://badenmongodb:1q2w3e@ds033257.mongolab.com:33257/baden_test', port=33257, db='baden_test', collection='log')
 
@@ -213,7 +228,7 @@ def DecodePoint(data):
             datestamp += timedelta(seconds=toffset)
 
     point = {
-        'time': datestamp,
+        'time': time.mktime(datestamp.timetuple()),
         'lat': latitude,
         'lon': longitude,
         'sats': sats,
@@ -319,6 +334,7 @@ class BinGps(tornado.web.RequestHandler):
 
         plen = len(pdata)
         offset = 0
+        lastpoint = None
         while offset < plen:
             if pdata[offset] != '\xFF':
                 offset += 1
@@ -328,9 +344,18 @@ class BinGps(tornado.web.RequestHandler):
                 point = DecodePoint(pdata[offset:offset + 32])
                 offset += 32
                 if point is not None:
-                    pass
+                    lastpoint = point
                     log.info('=== Point=%s' % repr(point))
 
+        if lastpoint is not None:
+            msg = {
+                "id": 0,
+                "message": "last_update",
+                "point": lastpoint
+            }
+            log.info('=== Inform=%s' % repr(msg))
+            #push_socket.send_pyobj(msg)
+            publish_stream.send_pyobj(msg)
 
         self.write("BINGPS: NOFUNC\r\n")
 
@@ -449,7 +474,6 @@ application = MyApplication([
 
 #log.debug('Start point.navi.cc server.')
 #tornado.options.parse_command_line()
-log.info("starting torando web server")
 '''
     log.debug("1 - debug message")
     log.info("2 - info message")
@@ -458,9 +482,48 @@ log.info("starting torando web server")
     log.critical("5 - critical message")
 '''
 
-if __name__ == "__main__":
-    #tornado.options.parse_command_line()
 
-    address = os.environ.get('OPENSHIFT_INTERNAL_IP', '0.0.0.0')
-    application.listen(8181, address=address)
-    tornado.ioloop.IOLoop.instance().start()
+def sig_handler(sig, frame):
+    """Catch signal and init callback.
+
+    More information about signal processing for graceful stoping
+    Tornado server you can find here:
+    http://codemehanika.org/blog/2011-10-28-graceful-stop-tornado.html
+    """
+    logging.warning('Caught signal: %s', sig)
+    IOLoop.instance().add_callback(shutdown)
+
+
+def shutdown():
+    """Stop server and add callback to stop i/o loop"""
+    io_loop = IOLoop.instance()
+
+    #logging.info('Stopping server')
+    #io_loop.stop()
+    # Can add some stop tasks here.
+
+    logging.info('Will shutdown in 1 seconds ...')
+    io_loop.add_timeout(time.time() + 1, io_loop.stop)
+
+
+def main():
+    log.info("starting torando web server")
+
+    #signal.signal(signal.SIGTERM, sig_handler)
+    #signal.signal(signal.SIGINT, sig_handler)
+
+    address = os.environ.get('INTERNAL_IP', '0.0.0.0')
+    port = int(os.environ.get('INTERNAL_POINT_PORT', '8181'))
+    application.listen(port, address=address)
+    try:
+        IOLoop.instance().start()
+    except KeyboardInterrupt:
+        IOLoop.instance().stop()
+        #io_loop.stop()
+        logging.info('Exit application')
+    publish_stream.close()
+
+
+if __name__ == '__main__':
+    tornado.options.parse_command_line()
+    main()
