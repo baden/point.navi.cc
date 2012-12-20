@@ -40,7 +40,8 @@ USE_BACKUP = True
 
 context = zmq.Context()
 publisher = context.socket(zmq.PUB)
-publisher.bind("ipc:///tmp/ws_sub")
+#publisher.bind("ipc:///tmp/ws_sub")
+publisher.connect("ipc:///tmp/ws_sub")
 publish_stream = ZMQStream(publisher)
 
 
