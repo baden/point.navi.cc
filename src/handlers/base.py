@@ -17,6 +17,7 @@ class BaseHandler(RequestHandler):
 
     def post(self, *args, **kwargs):
         self.set_header('Access-Control-Allow-Origin', '*')
+        self.set_header("Cache-control", "no-cache")
         #self.set_header('Content-Type', 'application/octet-stream')
 
         self.imei = self.get_argument("imei", None)
@@ -31,6 +32,7 @@ class BaseHandler(RequestHandler):
 
     def get(self, *args, **kwargs):
         self.set_header('Access-Control-Allow-Origin', '*')
+        self.set_header("Cache-control", "no-cache")
         #self.set_header('Content-Type', 'application/octet-stream')
 
         self.imei = self.get_argument("imei", None)
