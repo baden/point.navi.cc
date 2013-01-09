@@ -4,6 +4,7 @@
 from tornado.web import RequestHandler
 from config import IMEI_BLACK_LIST
 import logging
+from datetime import datetime
 
 
 class BaseHandler(RequestHandler):
@@ -32,7 +33,11 @@ class BaseHandler(RequestHandler):
 
     def get(self, *args, **kwargs):
         self.set_header('Access-Control-Allow-Origin', '*')
-        self.set_header("Cache-control", "no-cache")
+        self.set_header("Cache-Control", "no-cache, must-revalidate")
+        self.set_header("Expires","Mon, 26 Jul 1997 05:00:00 GMT")
+        now = datetime.now()
+        expiration = datetime(now.year-1, now.month, now.day)
+        self.set_header("Last-Modified", expiration)
         #self.set_header('Content-Type', 'application/octet-stream')
 
         self.imei = self.get_argument("imei", None)
@@ -44,6 +49,9 @@ class BaseHandler(RequestHandler):
 
         self.skey = self.application.system.skey_by_imei_or_create(self.imei)
         self.onget(*args, **kwargs)
+
+    def compute_etag(self):
+        return None
 
     def onpost(self, *args, **kwargs):
         pass
