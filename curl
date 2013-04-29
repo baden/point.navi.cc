@@ -1,0 +1,47 @@
+HTTP/1.1 200 OK
+Server: nginx/1.2.3
+Date: Sun, 13 Jan 2013 23:00:01 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 1124
+Connection: keep-alive
+Access-Control-Allow-Methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+Etag: "30137e02d293ca5fecc3415b3b86bea52b8acf6e"
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: Content-Type, X-Requested-With, Content-Length
+Set-Cookie: counter="MA==|1358118001|1d78b185a0f4f569da4a0a92c1e73b6770fdc213"; expires=Tue, 12 Feb 2013 23:00:01 GMT; Path=/
+Expires: Sun, 13 Jan 2013 23:00:00 GMT
+Cache-Control: no-cache
+
+{
+    "server_time": 1358118001, 
+    "identity": "lSoJqBav4Wz_tdlj_nyqZd0WHTU", 
+    "__profiler__": {
+        "duration": 0.0006868839263916016, 
+        "request": {
+            "method": "GET"
+        }
+    }, 
+    "get": "c29tZS1zaXRlX2NvbTozNTczNzMwMGMyMTA2NDQyNzNlNTg5MzAwZTMxN2ZiYTdjMDQ5NmFi", 
+    "self": {}, 
+    "auth": "ZGEzOWEzZWU1ZTZiNGIwZDMyNTViZmVmOTU2MDE4OTBhZmQ4MDcwOQ", 
+    "request": {
+        "headers": {
+            "Origin": "http://some-site.com", 
+            "X-Nginx-Proxy": "true", 
+            "X-Forwarded-For": "127.0.0.1", 
+            "Host": "api.localhost", 
+            "Accept": "*/*", 
+            "User-Agent": "curl/7.27.0", 
+            "Connection": "close", 
+            "X-Real-Ip": "127.0.0.1", 
+            "Authorization": "NHVmODBwdXhNZUg3ZHwWU11cFR5S3IxdW1vQGxTb0pxQmF2NFd6X3RkbGpfbnlxWmQwV0hUVQ==|1358117184|9dca9b2a0d49c4837e0778b4d880aa1c68c59908"
+        }, 
+        "cookies": {}, 
+        "remote_ip": "127.0.0.1"
+    }, 
+    "akey": "YWJj|1358118001|044036ad23763ab91018a5675e2bf75dc2575ca7", 
+    "api_version": "1.0", 
+    "user": {
+        "cookie": null
+    }
+}

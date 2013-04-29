@@ -3,15 +3,18 @@
 #import db
 #print "db:logs:import", repr(db)
 
+from base import DBBase
 
-class Logs(object):
-    def __init__(self, db):
-        self.col = db.collection("logs")
-        self.col.ensure_index([
+
+class Logs(DBBase):
+    def __init__(self):
+        super(Logs, self).__init__()
+        self.collection.ensure_index([
             ("skey", 1), ("dt", 1)
         ])
 
     def add(self, log):
+        self.collection.insert(log)
         '''
         text = log.get('text')
         if log.get('mtype') == 'alarm':
@@ -49,4 +52,3 @@ class Logs(object):
 
             })  # Информировать всех пользователей, у которых открыта страница Отчеты
         '''
-        self.col.insert(log)

@@ -4,7 +4,8 @@
 from route import Route
 from base import BaseHandler
 from time import time
-import logging
+#import logging
+from db.logs import Logs
 
 
 @Route(r"/addlog")
@@ -42,7 +43,7 @@ class AddLogHandler(BaseHandler):
             'ceng': self.get_argument('ceng', ''),
             'dt': int(time())
         }
-        self.application.logs.add(log)
+        Logs().add(log)
         del log["_id"]
         msg = {
             "message": "add_log",

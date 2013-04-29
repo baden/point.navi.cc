@@ -16,25 +16,25 @@ from datetime import datetime
 
 #from time import sleep
 #import signal
-from mongolog.handlers import MongoHandler
 
 from config import *
 
-from db import DB
-from redis import Redis
-from db.system import System
-from db.bingps import BinGPS
-from db.logs import Logs
+#from db import DB
+#from redis import Redis
+#from db.system import System
+#from db.bingps import BinGPS
+#from db.logs import Logs
 
 
 #from handlers import *
 from handlers.route import Route
-import handlers
+from handlers import *
 #from handlers import bingps
 
+from mongolog.handlers import MongoHandler
 import logging
 logging.getLogger().setLevel(logging.DEBUG)
-logging.getLogger().addHandler(MongoHandler.to(host=MONGO_URL, port=MONGO_PORT, db=MONGO_DATABASE, collection='log'))
+logging.getLogger().addHandler(MongoHandler.to(host=MONGO_URL, port=MONGO_PORT, db=MONGO_DATABASE, collection=LOG_COLLECTION))
 
 
 publisher = Publisher()
@@ -49,23 +49,23 @@ publisher = Publisher()
 #log = logging.getLogger('demo')
 #log.setLevel(logging.DEBUG)
 
-db = DB(url=MONGO_URL, db=MONGO_DATABASE)
-dblog = db.collection("log")
+#db = DB(url=MONGO_URL, db=MONGO_DATABASE)
+#dblog = db.collection("log")
 #dblog.ensure
 
-dblog.ensure_index([("time", -1)])
-dblog.ensure_index([("levelname", 1), ("time", -1)])
+#dblog.ensure_index([("time", -1)])
+#dblog.ensure_index([("levelname", 1), ("time", -1)])
 
 
-fake = db.collection("fake")
+#fake = db.collection("fake")
 
-redis = Redis(unix_socket_path=REDIS_SOCKET_PATH)
+#redis = Redis(unix_socket_path=REDIS_SOCKET_PATH)
 
 inmemcounter = 0
 startedat = datetime.utcnow()
 
 
-system = System(db, redis)
+#system = System(db, redis)
 
 
 def delta2dict(delta):
@@ -132,17 +132,17 @@ class MainHandler(tornado.web.RequestHandler):
         self.write("</ul>")
 
 
-bingps = BinGPS(db)
-logs = Logs(db)
+#bingps = BinGPS(db)
+#logs = Logs(db)
 
 
 class MyApplication(tornado.web.Application):
-    db = db
+    #db = db
     publisher = publisher
-    bingps = bingps
-    system = system
-    logs = logs
-    dblog = dblog
+    #bingps = bingps
+    #system = system
+    #logs = logs
+    #dblog = dblog
     """
     def log_request(self, handler):
 
@@ -159,7 +159,7 @@ class MyApplication(tornado.web.Application):
         #print ' LOG:%s' % log_message
     """
 
-print "Routes=", repr([(r.name, r.regex.pattern) for r in Route.routes()])
+logging.info("Routes=%s", repr([(r.name, r.regex.pattern) for r in Route.routes()]))
 
 #application = tornado.web.Application([
 application = MyApplication([

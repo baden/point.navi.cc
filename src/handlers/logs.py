@@ -3,6 +3,11 @@
 
 from tornado.web import RequestHandler
 from route import Route
+from pymongo import Connection
+
+from config import *
+
+dblog = Connection(MONGO_URL)[MONGO_DATABASE][LOG_COLLECTION]
 
 
 @Route(r"/logs")
@@ -11,9 +16,9 @@ class Logs(RequestHandler):
         self.set_header("Cache-control", "no-cache")
         level = self.get_argument("level", None)
         if level is not None:
-            logs = self.application.dblog.find({"levelname": level}).sort("time", -1).limit(100)
+            logs = dblog.find({"levelname": level}).sort("time", -1).limit(100)
         else:
-            logs = self.application.dblog.find().sort("time", -1).limit(100)
+            logs = dblog.find().sort("time", -1).limit(100)
         self.write("""
             <!doctype html>
             <html>

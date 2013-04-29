@@ -455,7 +455,7 @@
 			"file": "src/server.py",
 			"settings":
 			{
-				"buffer_size": 7315,
+				"buffer_size": 7360,
 				"line_ending": "Unix"
 			}
 		},
@@ -463,7 +463,7 @@
 			"file": "src/handlers/addlog.py",
 			"settings":
 			{
-				"buffer_size": 1489,
+				"buffer_size": 1500,
 				"line_ending": "Unix"
 			}
 		},
@@ -471,15 +471,15 @@
 			"file": "/dos/1--1/gps-maps27/server/point/main.py",
 			"settings":
 			{
-				"buffer_size": 13313,
-				"line_ending": "Windows"
+				"buffer_size": 0,
+				"line_ending": "Unix"
 			}
 		},
 		{
 			"file": "src/handlers/bingps.py",
 			"settings":
 			{
-				"buffer_size": 10922,
+				"buffer_size": 11135,
 				"line_ending": "Unix"
 			}
 		},
@@ -487,7 +487,7 @@
 			"file": "src/handlers/base.py",
 			"settings":
 			{
-				"buffer_size": 1649,
+				"buffer_size": 2539,
 				"line_ending": "Unix"
 			}
 		},
@@ -495,7 +495,7 @@
 			"file": "src/db/system.py",
 			"settings":
 			{
-				"buffer_size": 2633,
+				"buffer_size": 5483,
 				"line_ending": "Unix"
 			}
 		},
@@ -503,8 +503,8 @@
 			"file": "/dos/1--1/gps-maps27/server/datamodel/system.py",
 			"settings":
 			{
-				"buffer_size": 3413,
-				"line_ending": "Windows"
+				"buffer_size": 0,
+				"line_ending": "Unix"
 			}
 		},
 		{
@@ -552,7 +552,31 @@
 			"file": "src/handlers/logs.py",
 			"settings":
 			{
-				"buffer_size": 3426,
+				"buffer_size": 3508,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/baden/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 437,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/db/bingps.py",
+			"settings":
+			{
+				"buffer_size": 3874,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "doc/bingps-protocol.md",
+			"settings":
+			{
+				"buffer_size": 222,
 				"line_ending": "Unix"
 			}
 		}
@@ -880,7 +904,7 @@
 	"groups":
 	[
 		{
-			"selected": 12,
+			"selected": 15,
 			"sheets":
 			[
 				{
@@ -888,15 +912,15 @@
 					"file": "src/server.py",
 					"settings":
 					{
-						"buffer_size": 7315,
+						"buffer_size": 7360,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4427,
-								4427
+								2037,
+								2037
 							]
 						],
 						"settings":
@@ -943,7 +967,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -969,7 +993,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -994,7 +1018,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3600.0,
+						"translation.y": 1311.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1004,15 +1028,15 @@
 					"file": "src/handlers/addlog.py",
 					"settings":
 					{
-						"buffer_size": 1489,
+						"buffer_size": 1500,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1289,
-								1289
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1059,7 +1083,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1085,7 +1109,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1120,15 +1144,15 @@
 					"file": "/dos/1--1/gps-maps27/server/point/main.py",
 					"settings":
 					{
-						"buffer_size": 13313,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1682,
-								1682
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1175,7 +1199,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1201,7 +1225,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1235,15 +1259,15 @@
 					"file": "src/handlers/bingps.py",
 					"settings":
 					{
-						"buffer_size": 10922,
+						"buffer_size": 11135,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10603,
-								10603
+								6160,
+								6160
 							]
 						],
 						"settings":
@@ -1290,7 +1314,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1316,7 +1340,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1341,7 +1365,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5665.0,
+						"translation.y": 1932.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1351,15 +1375,15 @@
 					"file": "src/handlers/base.py",
 					"settings":
 					{
-						"buffer_size": 1649,
+						"buffer_size": 2539,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								868,
-								868
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1406,7 +1430,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1432,7 +1456,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1467,15 +1491,15 @@
 					"file": "src/db/system.py",
 					"settings":
 					{
-						"buffer_size": 2633,
+						"buffer_size": 5483,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2633,
-								2633
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1522,7 +1546,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1548,7 +1572,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1583,15 +1607,15 @@
 					"file": "/dos/1--1/gps-maps27/server/datamodel/system.py",
 					"settings":
 					{
-						"buffer_size": 3413,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1569,
-								1569
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1638,7 +1662,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1664,7 +1688,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1753,7 +1777,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1779,7 +1803,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1869,7 +1893,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -1895,7 +1919,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -1983,7 +2007,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -2009,7 +2033,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -2099,7 +2123,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -2125,7 +2149,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -2216,7 +2240,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -2242,7 +2266,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -2277,15 +2301,15 @@
 					"file": "src/handlers/logs.py",
 					"settings":
 					{
-						"buffer_size": 3426,
+						"buffer_size": 3508,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1754,
-								1754
+								0,
+								0
 							]
 						],
 						"settings":
@@ -2332,7 +2356,7 @@
 							},
 							"gjslint_ignore":
 							[
-								110
+								110.0
 							],
 							"gjslint_options":
 							[
@@ -2358,7 +2382,7 @@
 							],
 							"pyflakes_ignore_import_*": true,
 							"sublimelinter": true,
-							"sublimelinter_delay": 2,
+							"sublimelinter_delay": 2.0,
 							"sublimelinter_disable":
 							[
 							],
@@ -2384,6 +2408,351 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 432.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/home/baden/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
+					"settings":
+					{
+						"buffer_size": 437,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110.0
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2.0,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": false,
+							"sublimelinter_mark_style": "outline",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "src/db/bingps.py",
+					"settings":
+					{
+						"buffer_size": 3874,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								226,
+								226
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110.0
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2.0,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": false,
+							"sublimelinter_mark_style": "outline",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 92.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "doc/bingps-protocol.md",
+					"settings":
+					{
+						"buffer_size": 222,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								222,
+								222
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110.0
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2.0,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": false,
+							"sublimelinter_mark_style": "outline",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Markdown/Markdown.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

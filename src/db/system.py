@@ -7,8 +7,76 @@ import pickle
 from time import time
 import json
 
+import logging
 
-class System(object):
+from base import DBBase
+
+
+class System(DBBase):
+
+    @staticmethod
+    def imei_to_key(imei):
+        return base64.urlsafe_b64encode(str(imei)).rstrip('=')
+
+    @classmethod
+    def create_or_update(cls, imei, **kwargs):
+        logging.info("System.create_or_update(%s, %s)", str(imei), repr(kwargs))
+        skey = cls.imei_to_key(imei)
+        system = cls(key=skey, cached=True)
+        logging.info("  skey=%s  system=%s", str(skey), repr(system))
+
+        #TODO! Добавить обновление из kwargs телефона и других "редко-изменяемых" параметров
+        #TODO! Добавить обработку "часто-изменяемых" параметров
+
+        if system.isNone:
+            system.insert({
+                "_id": skey,
+                "imei": imei,               # IMEI. Не используется для идентификации, сохранено для удобства
+                "phone": u"Не определен",   # Телефон карточки системы
+                "date": int(time()),        # Дата создания записи (обычно первый выход на связь)
+                "premium": int(time()),     # Дата окончания премиум-подписки
+                # Ярлыки объекта (вместо групп)
+                # Значения представляют собой записи вида:
+                # {"домен": ["тэг1", "тэг2", ..., "тэгN"], "домен2': [...], ...}
+                "tags": {},
+                # Представляет собой словарь значений {"домен1": "описание1", "домен2": "описание2", ...}
+                "descbydomain": {},
+                # Пиктограмма {"домен1": "пиктограмма", "домен2": "пиктограмма", ...}
+                "icon": {},
+            })
+        return system
+
+    '''
+    @classmethod
+    def skey_by_imei_or_create(cls, imei):
+        return self.get_by_imei_or_create(imei)["_id"]
+
+
+    def get_by_imei_or_create(self, imei):
+        s = self.get_by_imei(imei)
+        if s is None:
+            skey = System.imei_to_key(imei)
+            s = {
+                "_id": skey,
+                "imei": imei,               # IMEI. Не используется для идентификации, сохранено для удобства
+                "phone": u"Не определен",   # Телефон карточки системы
+                "date": int(time()),        # Дата создания записи (обычно первый выход на связь)
+                "premium": int(time()),     # Дата окончания премиум-подписки
+                # Ярлыки объекта (вместо групп)
+                # Значения представляют собой записи вида:
+                # {"домен": ["тэг1", "тэг2", ..., "тэгN"], "домен2': [...], ...}
+                "tags": {},
+                # Представляет собой словарь значений {"домен1": "описание1", "домен2": "описание2", ...}
+                "descbydomain": {},
+                # Пиктограмма {"домен1": "пиктограмма", "домен2": "пиктограмма", ...}
+                "icon": {},
+            }
+            self.col.save(s)
+            self.redis.set('system.%s' % skey, pickle.dumps(s))
+        return s
+    '''
+
+    '''
     def __init__(self, db, redis):
         self.col = db.collection("system")
         # _id используется как ключ skey
@@ -79,3 +147,4 @@ class System(object):
             s["skey"] = s["_id"]
             del s["_id"]
         return json.dump(ss, indent=2)
+    '''

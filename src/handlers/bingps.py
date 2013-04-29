@@ -8,7 +8,7 @@ import time
 import logging
 from config import USE_BACKUP
 from utils import CRC16
-from db.bingps import Packer
+from db.bingps import BinGPS
 
 from route import Route
 from base import BaseHandler
@@ -93,14 +93,17 @@ def DecodePoint(data):
         logging.error("GPS_PARSE_ERROR: error datetime: future point [%s]" % data.encode('hex'))
         return None
 
-    latitude = float(p_lat1) + (float(p_lat2) + float(p_lat3 * 100 + p_lat4) / 10000.0) / 60.0
-    longitude = float(p_lon1) + (float(p_lon2) + float(p_lon3 * 100 + p_lon4) / 10000.0) / 60.0
+    #latitude = float(p_lat1) + (float(p_lat2) + float(p_lat3 * 100 + p_lat4) / 10000.0) / 60.0
+    latitude = (p_lat1 * 60 + p_lat2) * 10000 + p_lat3 * 100 + p_lat4
+    #longitude = float(p_lon1) + (float(p_lon2) + float(p_lon3 * 100 + p_lon4) / 10000.0) / 60.0
+    longitude = (p_lon1 * 60 + p_lon2) * 10000 + p_lon3 * 100 + p_lon4
     if p_nsew & 1:
         latitude = -latitude
     if p_nsew & 2:
         longitude = -longitude
 
-    speed = (float(p_speed) + float(p_speed2) / 100.0) * 1.852  # Переведем в км/ч
+    #speed = (float(p_speed) + float(p_speed2) / 100.0) * 1.852  # Переведем в км/ч
+    speed = p_speed * 100 + p_speed2
     if p_nsew & 4:
         course = float(p_course * 2 + 1) + float(p_course2) / 100.0
     else:
@@ -232,7 +235,8 @@ class BinGps(BaseHandler):
         logging.info(_log)
 
         plen = len(pdata)
-        packer = Packer()
+        #packer = Packer()
+        packer = BinGPS.packer(self.skey)
         offset = 0
         lastpoint = None
         while offset < plen:
@@ -244,11 +248,11 @@ class BinGps(BaseHandler):
                 point = DecodePoint(pdata[offset:offset + 32])
                 offset += 32
                 if point is not None:
-                    packer.add(point)
+                    packer.add_point_to_packer(point)
                     lastpoint = point
                     logging.info('=== Point=%s' % repr(point))
 
-        packer.save(self.application.bingps, self.skey)
+        packer.save_packer()
 
         if lastpoint is not None:
             msg = {
