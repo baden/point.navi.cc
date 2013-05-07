@@ -4,5 +4,10 @@
 		{
 			"path": "/home/baden/SDK/newgps.navi.cc/point.navi.cc"
 		}
-	]
+	],
+    "settings":
+    {
+        "tab_size": 4,
+        "gutter": true
+    }
 }

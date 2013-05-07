@@ -6,6 +6,10 @@ MONGO_URL = "mongodb://badenmongodb:1q2w3e@ds033257.mongolab.com:33257/baden_tes
 MONGO_PORT = 33257
 MONGO_DATABASE = "baden_test"
 
+# MONGO_URL = "localhost"
+# MONGO_PORT = None
+# MONGO_DATABASE = "newgps"
+
 IMEI_BLACK_LIST = ('test-BLACK', 'test-BLACK2')
 USE_BACKUP = True
 
@@ -20,3 +24,4 @@ REDIS_DB = 0
 
 # Коллекция для логов
 LOG_COLLECTION = 'log'
+

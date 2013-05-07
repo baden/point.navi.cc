@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -
 
-from struct import unpack, calcsize
+from struct import unpack_from, pack, calcsize
 from datetime import datetime, timedelta
 import time
 #from db import DB
@@ -48,8 +48,28 @@ PACK_F2 = '<BBBBBBBBBBBBBBBBBBBBBBHHBBHH'
 
 assert(calcsize(PACK_F2) == 32)
 
+PACK_F4 = '<BBBIIIHBBHHBHIBB'
+#           ^ - D0: Заголовок (должен быть == 0xFF)
+#            ^ - D1: Идентификатор пакета (должен быть == 0xC1)
+#             ^ - D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
+#              ^ - D3: Дата+время
+#               ^ - D4: Широта 1/10000 минут
+#                ^ - D5: Долгота 1/10000 минут
+#                 ^ - D6: Скорость 1/100 узла
+#                  ^ - D7: Направление/2 = 0..179
+#                   ^ - D8: Кол-во спутников 3..12
+#                    ^ - D9: Напряжение внешнего питания 1/100 B
+#                     ^ - D10: Напряжение внутреннего аккумулятора 1/100 B
+#                      ^ - D11: Тип точки   Причина фиксации точки
+#                       ^ - D12: Флаги
+#                        ^ - D13: Резерв
+#                         ^ - D14: Резерв
+#                          ^ - D15: Локальная CRC
+assert(calcsize(PACK_F4) == 32)
 
-def DecodePoint(data):
+
+def UpdatePoint(buffer, offset):
+    # Обновляет пакет со старого формата F2 на новый F4
     (
         p_head,     # D0: Заголовок (должен быть == 0xFF)
         p_id,       # D1: Идентификатор пакета (должен быть == 0xF2)
@@ -79,7 +99,7 @@ def DecodePoint(data):
         fsource,    # D27 Тип точки   Причина фиксации точки
         toffset,    # D28, D29   Неточное смещение   Смещение относительно точного времени в секундах. Значение 0xFFFF означает превышение лимита и должно игнорироваться если это возможно.
         photo       # D30, D31  Зарезервировано (используется для данных с фотодатчика)
-    ) = unpack(PACK_F2, data)
+    ) = unpack_from(PACK_F2, buffer, offset)
 
     month = p_my & 0x0F
     year = (p_my & 0xF0) / 16 + 2010
@@ -93,9 +113,10 @@ def DecodePoint(data):
         logging.error("GPS_PARSE_ERROR: error datetime: future point [%s]" % data.encode('hex'))
         return None
 
-    #latitude = float(p_lat1) + (float(p_lat2) + float(p_lat3 * 100 + p_lat4) / 10000.0) / 60.0
     latitude = (p_lat1 * 60 + p_lat2) * 10000 + p_lat3 * 100 + p_lat4
-    #longitude = float(p_lon1) + (float(p_lon2) + float(p_lon3 * 100 + p_lon4) / 10000.0) / 60.0
+    # latitude = float(p_lat1) + (float(p_lat2) + float(p_lat3 * 100 + p_lat4) / 10000.0) / 60.0
+
+    # longitude = float(p_lon1) + (float(p_lon2) + float(p_lon3*100 + p_lon4)/10000.0)/60.0
     longitude = (p_lon1 * 60 + p_lon2) * 10000 + p_lon3 * 100 + p_lon4
     if p_nsew & 1:
         latitude = -latitude
@@ -113,22 +134,26 @@ def DecodePoint(data):
 
     error = False
 
-    if latitude > 90.0:
+    # if latitude > 90.0:
+    if latitude > 90 * 60 * 10000:
         error = True
-    if latitude < -90.0:
+    # if latitude < -90.0:
+    if latitude < -90 * 60 * 10000:
         error = True
-    if longitude > 180.0:
+    # if longitude > 180.0:
+    if longitude > 180 * 60 * 10000:
         error = True
-    if longitude < -180.0:
+    # if longitude < -180.0:
+    if longitude < -180 * 60 * 10000:
         error = True
 
     if error:
         logging.error("Corrupt latitude or longitude %f, %f, [%s]" % (latitude, longitude, data.encode('hex')))
         return None
 
-    if sats < 3:
-        logging.error("No sats. [%s]" % data.encode('hex'))
-        return None
+    # if sats < 3:
+    #     logging.error("No sats. [%s]" % data.encode('hex'))
+    #     return None
 
     vout /= 100
     vin /= 10
@@ -140,18 +165,44 @@ def DecodePoint(data):
             logging.warning("Used toffset (%d seconds)" % toffset)
             datestamp += timedelta(seconds=toffset)
 
-    point = {
-        'time': time.mktime(datestamp.timetuple()),
-        'lat': latitude,
-        'lon': longitude,
-        'sats': sats,
-        'speed': speed,
-        'course': course,
-        'vout': vout,
-        'vin': vin,
-        'fsource': fsource,
-        'photo': photo
-    }
+    # point = {
+    #     'time': time.mktime(datestamp.timetuple()),
+    #     'lat': latitude,
+    #     'lon': longitude,
+    #     'sats': sats,
+    #     'speed': speed,
+    #     'course': course,
+    #     'vout': vout,
+    #     'vin': vin,
+    #     'fsource': fsource,
+    #     'photo': photo
+    # }
+
+    dt = time.mktime(datestamp.timetuple())
+
+    point = pack(
+        PACK_F4,
+        0xFF,                   # D0: Заголовок (должен быть == 0xFF)
+        0xF4,                   # D1: Идентификатор пакета (должен быть == 0xF4)
+        32,                     # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
+        dt,                     # D3: Дата+время
+        latitude,               # D4: Широта 1/10000 минут
+        longitude,              # D5: Долгота 1/10000 минут
+        speed,                  # D6: Скорость 1/100 узла
+        int(round(course/2)),   # D7: Направление/2 = 0..179
+        sats,                   # D8: Кол-во спутников 3..12
+        vout,                   # D9: Напряжение внешнего питания 1/100 B
+        vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
+        fsource,                # D11: Тип точки   Причина фиксации точки
+        0,                      # D12: Флаги
+        0,                      # D13: Резерв
+        0,                      # D14: Резерв
+        0                       # D15: Локальная CRC (пока не используется)
+    )
+    # point = {
+    #     'time': time.mktime(datestamp.timetuple()),
+    #     'bin': binpack,
+    # }
     return point
 
 
@@ -180,23 +231,6 @@ class BinGps(BaseHandler):
         _log += "\n skey=%s" % self.skey
 
         #skey = DBSystem.key_by_imei(imei)
-
-        '''
-        if 'Content-Type' in self.request.headers:
-            if "application/x-www-form-urlencoded" in self.request.headers['Content-Type']:
-                #pdata = unquote_plus(self.request.body.replace('=',''))
-                pdata = unquote_plus(pdata.replace('=&', '&'))
-
-                _log += "\n headers: %s" % repr(self.request.headers)
-                _log += '\n pdata len = %d  content-length = %d (%s) ' % (len(pdata), int(self.request.headers['Content_Length']), self.request.headers['Content_Length'])
-
-                if (len(pdata) == (int(self.request.headers['Content_Length']) + 1)) and (pdata[-1] == '='):
-                    pdata = pdata[:-1]
-                _log += '\n data reencoded'
-            else:
-                #pdata = self.request.body
-                _log += '\n raw data'
-        '''
 
         if len(pdata) < 3:
             logging.error('Data packet is too small or miss.')
@@ -245,12 +279,18 @@ class BinGps(BaseHandler):
                 continue
 
             if pdata[offset + 1] == '\xF2':
-                point = DecodePoint(pdata[offset:offset + 32])
+                point = UpdatePoint(pdata, offset)
                 offset += 32
                 if point is not None:
                     packer.add_point_to_packer(point)
                     lastpoint = point
-                    logging.info('=== Point=%s' % repr(point))
+                    # logging.info('=== Point=%s' % repr(point))
+
+            elif pdata[offset + 1] == '\xF4':
+                point = pdata[offset:offset+32]
+                packer.add_point_to_packer(point)
+                offset += 32
+                lastpoint = point
 
         packer.save_packer()
 
