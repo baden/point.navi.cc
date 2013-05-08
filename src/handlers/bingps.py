@@ -110,7 +110,7 @@ def UpdatePoint(buffer, offset):
         return None     # LENGTH
 
     if datestamp > datetime.now() + timedelta(days=1):
-        logging.error("GPS_PARSE_ERROR: error datetime: future point [%s]" % data.encode('hex'))
+        logging.error("GPS_PARSE_ERROR: error datetime: future point [%s]" % repr(datestamp))
         return None
 
     latitude = (p_lat1 * 60 + p_lat2) * 10000 + p_lat3 * 100 + p_lat4
