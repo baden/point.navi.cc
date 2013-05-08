@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -
 
-#from bisect import insort
+# from bisect import insort
+# import logging
+import time
 from base import DBBase
-import logging
-
 from bson import Binary
 from zlib import compress
 # from struct import pack, calcsize
@@ -66,8 +66,14 @@ class BinGPS(DBBase):
         self.buffer = self.db[self.__class__.__name__ + "_buffer"]
         # Индекс для выборки по системе с сортировкой по мере наполнения
         # Если его работа будет неудовлетворительной, то можно добавить искуственное поле с меткой времени
+        # self.buffer.ensure_index([
+        #     ("skey", 1), ("_id", 1)
+        # ])
+
+        # Индекс для выборки по системе с сортировкой по мере наполнения
+        # ts = long(time.time()*1e6)
         self.buffer.ensure_index([
-            ("skey", 1), ("_id", 1)
+            ("skey", 1), ("ts", 1)
         ])
 
     @classmethod
@@ -85,7 +91,8 @@ class BinGPS(DBBase):
 
     def free_buffer(self, hour, data):
         # Я искренне надеюсь что будет сохранен натуральные порядок, иначе нужно будет добавить правило сортировки
-        c = self.buffer.find({'skey': self.skey}).sort("_id", 1)
+        # c = self.buffer.find({'skey': self.skey}).sort("_id", 1)
+        c = self.buffer.find({'skey': self.skey}).sort("ts", 1)
         # Предполагаем что в буффере могут быть данные и за другие часы
         datas = {}
         removeids = []
@@ -116,7 +123,12 @@ class BinGPS(DBBase):
         self.buffer.remove({"_id": {"$in": removeids}})
 
         # Сохраним полученный пакет
-        self.buffer.save({'skey': self.skey, 'hour': hour, "data": Binary(data)})
+        self.buffer.save({
+            'skey': self.skey,
+            'hour': hour,
+            'ts': long(time.time()*1e6),
+            'data': Binary(data)
+        })
 
         # Сохраним значение последнего часа
         self.redis.set('%s.%s.lasthour' % (self.__class__.__name__, self.skey), hour)
@@ -126,7 +138,13 @@ class BinGPS(DBBase):
         if lasthour is not None:
             lasthour = int(lasthour)
             if lasthour == hour:
-                self.buffer.save({'skey': self.skey, 'hour': hour, "data": Binary(data)})
+                # self.buffer.save({'skey': self.skey, 'hour': hour, "data": Binary(data)})
+                self.buffer.save({
+                    'skey': self.skey,
+                    'hour': hour,
+                    'ts': long(time.time()*1e6),
+                    'data': Binary(data)
+                })
             else:
                 self.free_buffer(hour, data)
         else:
