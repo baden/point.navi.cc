@@ -34,18 +34,22 @@ class AddLogHandler(BaseHandler):
 
         pure_text = self.request.arguments.get('text', [''])[0]
 
-        # reencode = eval(repr(pure_text.decode('utf-8')).replace('u', '')) #.decode('utf-8')
+        reencode = eval(repr(pure_text.decode('utf-8')).replace('u', '')) #.decode('utf-8')
 
         # logging.info("Pure text = %s" % repr(pure_text))
         # logging.info("Reencode text = %s" % repr(reencode))
 
         text = self.get_argument('text', '')
-        # logging.info("Log text on hex: %s" % text.encode('hex'))
-        try:
-            text = eval(repr(pure_text.decode('utf-8')).replace('u', ''))
-            #text = text.decode('utf-8')
-        except:
+
+        if reencode.decode('utf-8') == reencode:
             pass
+        else:
+            text = reencode
+        # logging.info("Log text on hex: %s" % text.encode('hex'))
+        # try:
+            #text = text.decode('utf-8')
+        # except:
+            # pass
 
         try:
             swid = restartlog.findall(text)[0]
