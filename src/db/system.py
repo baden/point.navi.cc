@@ -27,12 +27,15 @@ class System(DBBase):
 
         #TODO! Добавить обновление из kwargs телефона и других "редко-изменяемых" параметров
         #TODO! Добавить обработку "часто-изменяемых" параметров
+        phone = u"Не определен"
+        if 'phone' in kwargs:
+            phone = kwargs["phone"]
 
         if system.isNone:
             system.insert({
                 "_id": skey,
                 "imei": imei,               # IMEI. Не используется для идентификации, сохранено для удобства
-                "phone": u"Не определен",   # Телефон карточки системы
+                "phone": phone,   # Телефон карточки системы
                 "date": int(time()),        # Дата создания записи (обычно первый выход на связь)
                 "premium": int(time()),     # Дата окончания премиум-подписки
                 # Ярлыки объекта (вместо групп)
@@ -44,7 +47,22 @@ class System(DBBase):
                 # Пиктограмма {"домен1": "пиктограмма", "домен2": "пиктограмма", ...}
                 "icon": {},
             })
+        else:
+            if phone is not None:
+                if system.document['phone'] != phone:
+                    #system.update('phone', phone)
+                    logging.info("==========> Update phone")
+                    system.update({"$set": {"phone": phone}})
+
         return system
+
+
+    def update_dynamic(self, **kwargs):
+        logging.info('system.update_dynamic %s' % repr(kwargs))
+        prefix = self.__class__.__name__ + "_dynamic"
+        key = self.key
+        #for k, v in kwargs.iteritems():
+        self.redis.hmset('%s.%s' % (prefix, key), kwargs)
 
     '''
     @classmethod

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -
 
-from struct import unpack_from, pack, calcsize
+from struct import unpack_from, pack, unpack, calcsize
 from datetime import datetime, timedelta
 import time
 #from db import DB
@@ -155,8 +155,8 @@ def UpdatePoint(buffer, offset):
     #     logging.error("No sats. [%s]" % data.encode('hex'))
     #     return None
 
-    vout /= 100
-    vin /= 10
+    #vout /= 100
+    #vin /= 10
 
     if toffset != 0:
         if toffset == 0xFFFF:
@@ -205,9 +205,44 @@ def UpdatePoint(buffer, offset):
     # }
     return point
 
-
+def point_to_dict(point):
+    (
+        head,                   # D0: Заголовок (должен быть == 0xFF)
+        id,                     # D1: Идентификатор пакета (должен быть == 0xF4)
+        len,                    # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (только 32)
+        dt,                     # D3: Дата+время
+        latitude,               # D4: Широта 1/10000 минут
+        longitude,              # D5: Долгота 1/10000 минут
+        speed,                  # D6: Скорость 1/100 узла
+        course,                 # D7: Направление/2 = 0..179
+        sats,                   # D8: Кол-во спутников 3..12
+        vout,                   # D9: Напряжение внешнего питания 1/100 B
+        vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
+        fsource,                # D11: Тип точки   Причина фиксации точки
+        flags,                  # D12: Флаги
+        res1,                   # D13: Резерв
+        res2,                   # D14: Резерв
+        crc                     # D15: Локальная CRC (пока не используется)
+    ) = unpack(PACK_F4, point)
+    latitude = latitude / 600000.0
+    longitude = longitude / 600000.0
+    speed = speed * 1.852 / 100.0
+    course = course * 2
+    vout = vout / 100.0
+    vin = vin / 100.0
+    return {
+        'dt': dt,
+        'latitude': latitude,
+        'longitude': longitude,
+        'speed': speed,
+        'course': course,
+        'sats': sats,
+        'vout': vout,
+        'vin': vin,
+        'fsource': fsource,
+        'flags': flags
+    }
 #tornado.web import Application, RequestHandler, asynchronous
-
 
 @Route(r"/bingps")
 class BinGps(BaseHandler):
@@ -295,6 +330,10 @@ class BinGps(BaseHandler):
         packer.save_packer()
 
         if lastpoint is not None:
+            asdict = point_to_dict(lastpoint)
+            #system.update_dynamic(lastlat = asdict['latitude'], lastlon = asdict['longitude'], sats = asdict['sats'])
+            self.system.update_dynamic(**asdict)
+
             msg = {
                 "id": 0,
                 "message": "last_update",
