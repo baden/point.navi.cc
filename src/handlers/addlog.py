@@ -32,6 +32,9 @@ class AddLogHandler(BaseHandler):
         if slon[-1] == 'W':
             lon = -lon
 
+        pure_text = self.request.arguments.get('text', [''])[0]
+        logging.info("Pure text = %s" % repr(pure_text))
+
         text = self.get_argument('text', '')
         # logging.info("Log text on hex: %s" % text.encode('hex'))
         try:
