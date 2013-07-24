@@ -269,7 +269,7 @@ class BinGps(BaseHandler):
 
         if len(pdata) < 3:
             logging.error('Data packet is too small or miss.')
-            self.response.write('BINGPS: CRCERROR\r\n')
+            self.write("BINGPS: CRCERROR\r\n")
             return
 
         crc = ord(pdata[-1]) * 256 + ord(pdata[-2])

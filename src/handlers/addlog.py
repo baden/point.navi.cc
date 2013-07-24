@@ -34,9 +34,11 @@ class AddLogHandler(BaseHandler):
 
         text = self.get_argument('text', '')
         try:
-            text = text.decode('utf-8')
+            text = unicode(text)
+            #text = text.decode('utf-8')
         except:
             pass
+
         try:
             swid = restartlog.findall(text)[0]
             logging.info("parced SWID: %s" % repr(swid))
