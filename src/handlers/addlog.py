@@ -33,7 +33,7 @@ class AddLogHandler(BaseHandler):
             lon = -lon
 
         text = self.get_argument('text', '')
-        logging.info("Log text on hex: %s" % text.encode('hex'))
+        # logging.info("Log text on hex: %s" % text.encode('hex'))
         try:
             text = unicode(text.decode('utf-8'))
             #text = text.decode('utf-8')
