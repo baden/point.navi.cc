@@ -333,12 +333,19 @@ class BinGps(BaseHandler):
             asdict = point_to_dict(lastpoint)
             #system.update_dynamic(lastlat = asdict['latitude'], lastlon = asdict['longitude'], sats = asdict['sats'])
             self.system.update_dynamic(**asdict)
+            msg = {
+                "id": 0,
+                "message": "update_dynamic",
+                "skey": self.skey,
+                "dynamic": asdict
+            }
+            self.application.publisher.send(msg)
 
             msg = {
                 "id": 0,
                 "message": "last_update",
                 "skey": self.skey,
-                "point": lastpoint
+                "point": asdict
             }
             self.application.publisher.send(msg)
 

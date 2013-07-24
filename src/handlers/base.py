@@ -52,6 +52,13 @@ class BaseHandler(RequestHandler):
             dynamic["vin"] = int(vin) / 1000.0
 
         system.update_dynamic(**dynamic)
+        msg = {
+            "id": 0,
+            "message": "update_dynamic",
+            "skey": self.skey,
+            "dynamic": dynamic
+        }
+        self.application.publisher.send(msg)
 
         #TODO! Добавить обновление из self.get_arguments телефона и других "редко-изменяемых" параметров
         #TODO! Добавить обработку из self.get_arguments "часто-изменяемых" параметров
@@ -96,6 +103,13 @@ class BaseHandler(RequestHandler):
             dynamic["vin"] = int(vin) / 1000.0
 
         system.update_dynamic(**dynamic)
+        msg = {
+            "id": 0,
+            "message": "update_dynamic",
+            "skey": self.skey,
+            "dynamic": dynamic
+        }
+        self.application.publisher.send(msg)
 
         self.onget(*args, **kwargs)
 
