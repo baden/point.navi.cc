@@ -32,7 +32,11 @@ class AddLogHandler(BaseHandler):
         if slon[-1] == 'W':
             lon = -lon
 
-        text = self.get_argument('text', None)
+        text = self.get_argument('text', '')
+        try:
+            text = text.decode('utf-8')
+        except:
+            pass
         try:
             swid = restartlog.findall(text)[0]
             logging.info("parced SWID: %s" % repr(swid))
