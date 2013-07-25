@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -
 
 from struct import unpack_from, pack, unpack, calcsize
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, tzinfo
 import time
 #from db import DB
 import logging
@@ -67,6 +67,23 @@ PACK_F4 = '<BBBIIIHBBHHBHIBB'
 #                          ^ - D15: Локальная CRC
 assert(calcsize(PACK_F4) == 32)
 
+ZERO = timedelta(0)
+
+# A UTC class.
+
+class UTC(tzinfo):
+    """UTC"""
+
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return ZERO
+
+utc = UTC()
 
 def UpdatePoint(buffer, offset):
     # Обновляет пакет со старого формата F2 на новый F4
@@ -104,12 +121,12 @@ def UpdatePoint(buffer, offset):
     month = p_my & 0x0F
     year = (p_my & 0xF0) / 16 + 2010
     try:
-        datestamp = datetime(year, month, day, hours, minutes, seconds)
+        datestamp = datetime(year, month, day, hours, minutes, seconds, 0, utc)
     except ValueError, strerror:
         logging.error("GPS_PARSE_ERROR: error datetime (%s): [%s]" % (strerror, data.encode('hex')))
         return None     # LENGTH
 
-    if datestamp > datetime.now() + timedelta(days=1):
+    if datestamp > datetime.now(utc) + timedelta(days=1):
         logging.error("GPS_PARSE_ERROR: error datetime: future point [%s]" % repr(datestamp))
         return None
 
