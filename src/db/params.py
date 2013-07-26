@@ -25,7 +25,7 @@ class Params(DBBase):
         return json.loads(value["save"])
 
     def saveconfig(self, skey, config):
-        logging.info('saveconfig (%s, %s)' % (repr(skey), repr(config)))
+        # logging.info('saveconfig (%s, %s)' % (repr(skey), repr(config)))
         prepare = {}
         # for (k, v) in config.iteritems():
         #     prepare[DBBase.tokey(k)] = v
@@ -33,6 +33,6 @@ class Params(DBBase):
             prepare[DBBase.tokey(k) + ".type"] = v["type"]
             prepare[DBBase.tokey(k) + ".value"] = v["value"]
             prepare[DBBase.tokey(k) + ".default"] = v["default"]
-        logging.info('saveconfig prepare (%s)' % repr(prepare))
+        # logging.info('saveconfig prepare (%s)' % repr(prepare))
         self.collection.update({"_id": skey}, {"$set": prepare}, True)
         pass
