@@ -85,7 +85,7 @@ assert(calcsize(PACK_F4) == 32)
 
 # utc = UTC()
 
-tzdelta = datetime.utcnow() - datetime.now()
+tzdelta = datetime.now() - datetime.utcnow()
 
 def UpdatePoint(buffer, offset):
     # Обновляет пакет со старого формата F2 на новый F4
