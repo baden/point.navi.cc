@@ -28,5 +28,5 @@ class Params(DBBase):
         prepare = []
         for (k, v) in config.iteritems():
             prepare.append({ DBBase.tokey(k): v })
-        self.collection.update({"_id": skey, "$push": {"$each": prepare}})
+        self.collection.update({"_id": skey}, {"$push": {"$each": prepare}}, True)
         pass
