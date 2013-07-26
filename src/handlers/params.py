@@ -33,10 +33,13 @@ class Config(BaseHandler):
                     }
 
             #logging.info("config={0}".format(repr(config)))
-            document = {
-                '_id': self.skey,
-                'save': json.dumps(config)
-            }
+            # document = {
+            #     '_id': self.skey,
+            #     'save': json.dumps(config)
+            # }
 
-            Params().save(document)
+            # Params().save(document)
+
+            Params().saveconfig(self.skey, config)
+
             self.write("CONFIG: OK\r\n")

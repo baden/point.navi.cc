@@ -81,6 +81,14 @@ class DBBase(object):
         self.document = document
         self.collection.save(self.document)
 
+    @staticmethod
+    def tokey(key):
+        return key.replace(".", "#")
+
+    @staticmethod
+    def fromkey(key):
+        return key.replace("#", ".")
+
     '''
     @classmethod
     def save(cls, value, key=None):

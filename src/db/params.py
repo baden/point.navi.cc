@@ -23,3 +23,10 @@ class Params(DBBase):
         if value is None:
             return None
         return json.loads(value["save"])
+
+    def saveconfig(self, skey, config):
+        prepare = []
+        for (k, v) in config.iteritems():
+            prepare.push({ DBBase.tokey(k): v })
+        self.collection.update({"_id": skey, "$push": {"$each": prepare}})
+        pass
