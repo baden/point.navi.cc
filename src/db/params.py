@@ -30,5 +30,6 @@ class Params(DBBase):
         for (k, v) in config.iteritems():
             prepare.append({ DBBase.tokey(k): v })
         logging.info('saveconfig prepare (%s)' % repr(prepare))
-        self.collection.update({"_id": skey}, {"$push": {"$each": prepare}}, True)
+        # self.collection.update({"_id": skey}, {"$push": {"$each": prepare}}, True)
+        self.collection.update({"_id": skey}, {"$pushAll": prepare}, True)
         pass
