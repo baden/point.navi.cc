@@ -67,23 +67,25 @@ PACK_F4 = '<BBBIIIHBBHHBHIBB'
 #                          ^ - D15: Локальная CRC
 assert(calcsize(PACK_F4) == 32)
 
-ZERO = timedelta(0)
+# ZERO = timedelta(0)
 
-# A UTC class.
+# # A UTC class.
 
-class UTC(tzinfo):
-    """UTC"""
+# class UTC(tzinfo):
+#     """UTC"""
 
-    def utcoffset(self, dt):
-        return ZERO
+#     def utcoffset(self, dt):
+#         return ZERO
 
-    def tzname(self, dt):
-        return "UTC"
+#     def tzname(self, dt):
+#         return "UTC"
 
-    def dst(self, dt):
-        return ZERO
+#     def dst(self, dt):
+#         return ZERO
 
-utc = UTC()
+# utc = UTC()
+
+tzdelta = datetime.utcnow() - datetime.now()
 
 def UpdatePoint(buffer, offset):
     # Обновляет пакет со старого формата F2 на новый F4
@@ -121,12 +123,14 @@ def UpdatePoint(buffer, offset):
     month = p_my & 0x0F
     year = (p_my & 0xF0) / 16 + 2010
     try:
-        datestamp = datetime(year, month, day, hours, minutes, seconds, 0, utc)
+        # datestamp = datetime(year, month, day, hours, minutes, seconds, 0, utc)
+        datestamp = datetime(year, month, day, hours, minutes, seconds) + tzdelta
     except ValueError, strerror:
         logging.error("GPS_PARSE_ERROR: error datetime (%s): [%s]" % (strerror, data.encode('hex')))
         return None     # LENGTH
 
-    if datestamp > datetime.now(utc) + timedelta(days=1):
+    # if datestamp > datetime.now(utc) + tzdelta + timedelta(days=1):
+    if datestamp > datetime.now() + tzdelta + timedelta(days=1):
         logging.error("GPS_PARSE_ERROR: error datetime: future point [%s]" % repr(datestamp))
         return None
 
