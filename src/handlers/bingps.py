@@ -85,6 +85,7 @@ assert(calcsize(PACK_F4) == 32)
 
 # utc = UTC()
 
+# TODO! Эта конструкция небезопасна в плане перехода на зимнее-летнее время
 tzdelta = datetime.now() - datetime.utcnow()
 
 def UpdatePoint(buffer, offset):

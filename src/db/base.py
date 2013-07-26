@@ -77,6 +77,10 @@ class DBBase(object):
         self.document = document
         self.collection.save(self.document)
 
+    def save(self, document):
+        self.document = document
+        self.collection.save(self.document)
+
     '''
     @classmethod
     def save(cls, value, key=None):

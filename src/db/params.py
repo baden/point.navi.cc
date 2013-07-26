@@ -15,8 +15,7 @@ class Params(DBBase):
         #logging.info('Params.save(%s, %s)', str(imei), str(object))
         #logging.info('=== config=%s', str(MONGO_URL))
         #logging.info('=== db=%s', cls.db)
-
-        super(Params, cls).save({'save': json.dumps(object)}, key=skey)
+        super(Params, cls).save({'_id': skey, 'save': json.dumps(object)})
 
     @classmethod
     def get(cls, skey):
