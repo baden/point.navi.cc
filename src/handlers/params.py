@@ -39,3 +39,4 @@ class Config(BaseHandler):
             }
 
             Params().save(document)
+            self.write("CONFIG: OK\r\n")
