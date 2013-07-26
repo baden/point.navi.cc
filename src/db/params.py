@@ -18,11 +18,44 @@ class Params(DBBase):
     #     super(Params, cls).save({'_id': skey, 'save': json.dumps(object)})
 
     @classmethod
-    def get(cls, skey):
-        value = cls.find_by_key(skey)
-        if value is None:
-            return None
-        return json.loads(value["save"])
+    def get(cls, key):
+        return cls(key)      # На данный момент есть различия в реализации и это получает данные
+        # value = cls.find_by_key(skey)
+        # if value is None:
+        #     return None
+        # return json.loads(value["save"])
+
+    def all(self):
+        result = {}
+        if self.document is not None:
+            for (k,v) in self.document.iteritems():
+                if k not in ["_id", "__cache__"]:
+                    result[DBBase.fromkey(k)] = v
+        return result
+
+    @classmethod
+    def del_queueall(cls, skey):
+        self = cls.get(skey)
+        result = {}
+        for (k, v) in self.document.iteritems():
+            if k not in ["_id", "__cache__"]:
+                if v.has_key("queue"):
+                    result[k + ".queue"] = ""
+        self.reset_cache()
+        self.collection.update({"_id": self.key}, {"$unset": result})
+
+    @classmethod
+    def confirm_queueall(cls, skey):
+        self = cls.get(skey)
+        _set = {}
+        unset = {}
+        for (k, v) in self.document.iteritems():
+            if k not in ["_id", "__cache__"]:
+                if v.has_key("queue"):
+                    _set[k + ".value"] = v["queue"]
+                    unset[k + ".queue"] = ""
+        self.reset_cache()
+        self.collection.update({"_id": self.key}, {"$set": _set, "$unset": unset})
 
     def saveconfig(self, skey, config):
         # logging.info('saveconfig (%s, %s)' % (repr(skey), repr(config)))

@@ -6,6 +6,7 @@ from base import BaseHandler
 from time import time
 import logging
 import json
+from db import sinform
 
 
 from db.params import Params
@@ -16,15 +17,11 @@ class Config(BaseHandler):
         from shlex import split
         cmd = self.get_argument('cmd', '')
         if cmd == 'save':
-            #logging.info('Save config')
             body = self.request.body
-            #logging.info("== CONFIG_BODY: %s" % repr(body))
 
             config = {}
             for conf in body.split("\n"):
-                #params = conf.strip().split()
                 params = split(conf.strip())
-                #logging.info("== PARAM: %s" % repr(params))
                 if len(params) == 4:
                     config[params[0]] = {
                         "type": params[1],
@@ -32,14 +29,50 @@ class Config(BaseHandler):
                         "default": params[3]
                     }
 
-            #logging.info("config={0}".format(repr(config)))
-            # document = {
-            #     '_id': self.skey,
-            #     'save': json.dumps(config)
-            # }
-
-            # Params().save(document)
 
             Params().saveconfig(self.skey, config)
 
             self.write("CONFIG: OK\r\n")
+
+# /params?imei=013226000198214&cmd=params
+@Route(r"/params")
+class Config(BaseHandler):
+    def onget(self):
+
+        cmd = self.get_argument('cmd', '')
+
+        if cmd == "params":
+            empty = True
+            params = Params.get(self.skey).all()
+            for (k, v) in params.iteritems():
+                if v.has_key("queue"):
+                    self.write("PARAM %s %s\r\n" % (k, v["queue"]))
+                    empty = False
+
+            self.write("FINISH\r\n")
+            if empty:
+                sinform.sinform_unset(self.skey, "CONFIGUP")
+
+        elif cmd == 'cancel':
+            Params.del_queueall(self.skey)
+            sinform.sinform_unset(self.skey, "CONFIGUP")
+            self.write("DELETED\r\n")
+
+        elif cmd == 'confirm':
+            Params.confirm_queueall(self.skey)
+            sinform.sinform_unset(self.skey, "CONFIGUP")
+            self.write("CONFIRM")
+
+        elif cmd == 'check':
+            empty = True
+            params = Params.get(self.skey).all()
+            for (k, v) in params.iteritems():
+                if v.has_key("queue"):
+                    empty = False
+
+            if empty:
+                sinform.sinform_unset(self.skey, "CONFIGUP")
+                self.write('NODATA\r\n')
+            else:
+                sinform.sinform_set(self.skey, "CONFIGUP")
+                self.write("CONFIGUP\r\n")

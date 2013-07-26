@@ -21,7 +21,7 @@ class DBBase(object):
         self.cached = cached
         self.collection = self.db[self.__class__.__name__]
         self.document = self.get_by_key(key)
-        logging.info("  + self.document=%s", repr(self.document))
+        # logging.info("  + self.document=%s", repr(self.document))
 
     def __repr__(self):
         return "DB:'{0}' collection:'{0}' document:'{1}'".format(self.__class__.__name__, repr(self.document))
