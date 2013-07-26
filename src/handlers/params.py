@@ -29,8 +29,14 @@ class Config(BaseHandler):
                         "default": params[3]
                     }
 
-
             Params().saveconfig(self.skey, config)
+
+            # В оригинале: inform(skey, 'cfgupd', {'skey': str(skey)})
+            msg = {
+                "message": "cfg_upd",
+                "skey": self.skey
+            }
+            self.application.publisher.send(msg)
 
             self.write("CONFIG: OK\r\n")
 
@@ -58,10 +64,22 @@ class Config(BaseHandler):
             sinform.sinform_unset(self.skey, "CONFIGUP")
             self.write("DELETED\r\n")
 
+            msg = {
+                "message": "cfg_upd",
+                "skey": self.skey
+            }
+            self.application.publisher.send(msg)
+
         elif cmd == 'confirm':
             Params.confirm_queueall(self.skey)
             sinform.sinform_unset(self.skey, "CONFIGUP")
             self.write("CONFIRM")
+
+            msg = {
+                "message": "cfg_upd",
+                "skey": self.skey
+            }
+            self.application.publisher.send(msg)
 
         elif cmd == 'check':
             empty = True

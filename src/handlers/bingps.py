@@ -12,6 +12,7 @@ from db.bingps import BinGPS
 
 from route import Route
 from base import BaseHandler
+from db import sinform
 
 
 print ":handlers:bingps"
@@ -370,6 +371,10 @@ class BinGps(BaseHandler):
                 "point": asdict
             }
             self.application.publisher.send(msg)
+
+        for l in sinform.sinform_getall(self.skey):
+            self.write("%s\r\n" % str(l))
+        self.write("ADDLOG: OK\r\n")
 
         self.write("BINGPS: OK\r\n")
 
