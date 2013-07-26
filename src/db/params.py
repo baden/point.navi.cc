@@ -10,12 +10,12 @@ import json
 class Params(DBBase):
     col = 'params'
 
-    @classmethod
-    def save(cls, skey, object):
-        #logging.info('Params.save(%s, %s)', str(imei), str(object))
-        #logging.info('=== config=%s', str(MONGO_URL))
-        #logging.info('=== db=%s', cls.db)
-        super(Params, cls).save({'_id': skey, 'save': json.dumps(object)})
+    # @classmethod
+    # def save(cls, skey, object):
+    #     #logging.info('Params.save(%s, %s)', str(imei), str(object))
+    #     #logging.info('=== config=%s', str(MONGO_URL))
+    #     #logging.info('=== db=%s', cls.db)
+    #     super(Params, cls).save({'_id': skey, 'save': json.dumps(object)})
 
     @classmethod
     def get(cls, skey):
