@@ -6,6 +6,7 @@ from base import BaseHandler
 from time import time
 import logging
 from db.logs import Logs
+from db import sinform
 import re
 
 restartlog = re.compile(r'SWID:<b>([\dA-F]+)</b>')
@@ -82,4 +83,9 @@ class AddLogHandler(BaseHandler):
         }
         self.application.publisher.send(msg)
 
+        # Возможно это нужно перенести в общий блок. А может и нет.
+
+        #sinform
+        for l in sinform.sinform_getall(self.skey):
+            self.write("%s\r\n" % str(l))
         self.write("ADDLOG: OK\r\n")
