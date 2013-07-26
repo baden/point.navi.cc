@@ -26,10 +26,11 @@ class Params(DBBase):
 
     def saveconfig(self, skey, config):
         logging.info('saveconfig (%s, %s)' % (repr(skey), repr(config)))
-        prepare = []
+        prepare = {}
         for (k, v) in config.iteritems():
-            prepare.append({ DBBase.tokey(k): v })
+            # prepare.append({ DBBase.tokey(k): v })
+            prepare[DBBase.tokey(k)] = v
         logging.info('saveconfig prepare (%s)' % repr(prepare))
         # self.collection.update({"_id": skey}, {"$push": {"$each": prepare}}, True)
-        self.collection.update({"_id": skey}, {"$pushAll": prepare}, True)
+        self.collection.update({"_id": skey}, {"$set": prepare}, True)
         pass
