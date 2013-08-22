@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -
 
 # from bisect import insort
-# import logging
+import logging
 import time
 from base import DBBase
 from bson import Binary
@@ -86,9 +86,12 @@ class BinGPS(DBBase):
     def add_point_to_packer(self, point):
         if point[1] == '\xF4':
             hour = unpack_from("<I", point, 3)[0] // 3600  # TODO! Не самое элегантное решение
+            logging.info("packet F4 hour = %d" % hour)
         elif point[1] == '\xF5':
             hour = unpack_from("<I", point, 4)[0] // 3600  # TODO! Не самое элегантное решение
+            logging.info("packet F5 hour = %d" % hour)
         else:
+            logging.error("wrond packet id")
             return
         if hour not in self.packet:
             self.packet[hour] = ""
