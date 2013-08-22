@@ -49,7 +49,7 @@ PACK_F2 = '<BBBBBBBBBBBBBBBBBBBBBBHHBBHH'
 
 assert(calcsize(PACK_F2) == 32)
 
-PACK_C1 = '<BBBIIIHBBHHBHIBB'
+PACK_F4 = '<BBBIIIHBBHHBHIBB'
 #           ^ - D0: Заголовок (должен быть == 0xFF)
 #            ^ - D1: Идентификатор пакета (должен быть == 0xC1)
 #             ^ - D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
@@ -66,9 +66,9 @@ PACK_C1 = '<BBBIIIHBBHHBHIBB'
 #                        ^ - D13: Резерв
 #                         ^ - D14: Резерв
 #                          ^ - D15: Локальная CRC
-assert(calcsize(PACK_C1) == 32)
+assert(calcsize(PACK_F4) == 32)
 
-PACK_C2 = '<BBBBIIIHHHBBHBBBBBB'
+PACK_F5 = '<BBBBIIIHHHBBHBBBBBB'
 #           ^ - D0:B Заголовок (должен быть == 0xFF)
 #            ^ - D1:B Идентификатор пакета (должен быть == 0xC2)
 #             ^ - D2:B Тип точки   Причина фиксации точки (младшие 6 бит, бит 7 - фиксация без активных спутников.
@@ -90,7 +90,7 @@ PACK_C2 = '<BBBBIIIHHHBBHBBBBBB'
 #                             ^ - D18:B Резерв
 #                              ^ - D19:B Резерв
 #                               ^ - D20:B Локальная CRC (сумма всех байтов пакета, младший разряд)
-assert(calcsize(PACK_C2) == 32)
+assert(calcsize(PACK_F5) == 32)
 
 # -------------------------------
 # Тип точки - 5 бит. Три старших бита используются для других целей. Старший бит - фиксация точки без координат.
@@ -234,7 +234,7 @@ def UpdatePoint(buffer, offset):
     dt = time.mktime(datestamp.timetuple())
 
     point = pack(
-        PACK_C1,
+        PACK_F4,
         0xFF,                   # D0: Заголовок (должен быть == 0xFF)
         0xF4,                   # D1: Идентификатор пакета (должен быть == 0xF4)
         32,                     # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
@@ -258,10 +258,11 @@ def UpdatePoint(buffer, offset):
     # }
     return point
 
+# TODO!!! Переделать на 0xF5
 def point_to_dict(point):
     (
         head,                   # D0: Заголовок (должен быть == 0xFF)
-        id,                     # D1: Идентификатор пакета (должен быть == 0xС1)
+        id,                     # D1: Идентификатор пакета (должен быть == 0xF4)
         len,                    # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (только 32)
         dt,                     # D3: Дата+время (unixtime)
         latitude,               # D4: Широта 1/10000 минут
@@ -276,7 +277,7 @@ def point_to_dict(point):
         res1,                   # D13: Резерв
         res2,                   # D14: Резерв
         crc                     # D15: Локальная CRC (пока не используется)
-    ) = unpack(PACK_C1, point)
+    ) = unpack(PACK_F4, point)
     latitude = latitude / 600000.0
     longitude = longitude / 600000.0
     speed = speed * 1.852 / 100.0
@@ -384,7 +385,7 @@ class BinGps(BaseHandler):
                 offset += 32
                 lastpoint = point
 
-            elif pdata[offset + 1] == '\xC2':
+            elif pdata[offset + 1] == '\xF5':
                 point = pdata[offset:offset+32]
                 packer.add_point_to_packer(point)
                 offset += 32

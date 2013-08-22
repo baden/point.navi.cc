@@ -84,7 +84,12 @@ class BinGPS(DBBase):
         return bingps
 
     def add_point_to_packer(self, point):
-        hour = unpack_from("<I", point, 3)[0] // 3600  # TODO! Не самое элегантное решение
+        if point[1] == '\xF4':
+            hour = unpack_from("<I", point, 3)[0] // 3600  # TODO! Не самое элегантное решение
+        elif point[1] == '\xF5':
+            hour = unpack_from("<I", point, 4)[0] // 3600  # TODO! Не самое элегантное решение
+        else:
+            return
         if hour not in self.packet:
             self.packet[hour] = ""
         self.packet[hour] += point
