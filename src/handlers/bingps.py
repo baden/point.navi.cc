@@ -305,7 +305,7 @@ class BinGps(BaseHandler):
 
         pdata = self.request.body
 
-        _log = 'LOGS:'
+        _log = '\n====\nLOGS:'
         _log += "\n pdata len=%s" % len(pdata)
         _log += "\n data id=%s" % dataid
         #_log += "\n os.environ: %s" % repr(os.environ)
@@ -321,6 +321,14 @@ class BinGps(BaseHandler):
 
         #skey = DBSystem.key_by_imei(imei)
 
+        if USE_BACKUP:
+            _log += '\n Saving to backup (TBD)'
+            _log += '\n Data (HEX):'
+            for data in pdata:
+                _log += ' %02X' % ord(data)
+            logging.info(_log)
+            pass
+
         if len(pdata) < 3:
             logging.error('Data packet is too small or miss.')
             self.write("BINGPS: CRCERROR\r\n")
@@ -332,10 +340,6 @@ class BinGps(BaseHandler):
         crc2 = 0
         for byte in pdata:
             crc2 = CRC16(crc2, ord(byte))
-
-        if USE_BACKUP:
-            _log += '\n Saving to backup'
-            pass
 
         if crc != crc2:
             _log += '\n Warning! Calculated CRC: 0x%04X but system say CRC: 0x%04X. (Now error ignored.)' % (crc2, crc)
