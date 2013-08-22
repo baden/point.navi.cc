@@ -326,7 +326,6 @@ class BinGps(BaseHandler):
             _log += '\n Data (HEX):'
             for data in pdata:
                 _log += ' %02X' % ord(data)
-            logging.info(_log)
             pass
 
         if len(pdata) < 3:
@@ -380,6 +379,12 @@ class BinGps(BaseHandler):
                     # logging.info('=== Point=%s' % repr(point))
 
             elif pdata[offset + 1] == '\xF4':
+                point = pdata[offset:offset+32]
+                packer.add_point_to_packer(point)
+                offset += 32
+                lastpoint = point
+
+            elif pdata[offset + 1] == '\xC2':
                 point = pdata[offset:offset+32]
                 packer.add_point_to_packer(point)
                 offset += 32
