@@ -305,7 +305,7 @@ class BinGps(BaseHandler):
 
         pdata = self.request.body
 
-        _log = '\n====\nLOGS:'
+        _log = '\n\n====\nLOGS:'
         _log += "\n pdata len=%s" % len(pdata)
         _log += "\n data id=%s" % dataid
         #_log += "\n os.environ: %s" % repr(os.environ)
