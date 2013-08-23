@@ -102,7 +102,7 @@ class MainHandler(tornado.web.RequestHandler):
         global inmemcounter, startedat
         inmemcounter += 1
         self.set_header("Cache-control", "no-cache")
-        self.write("<h2>Api_newgps_navi_cc server</h2><ul>")
+        self.write("<h2>Point_newgps_navi_cc server</h2><ul>")
 
         self.write("<li><b>Server work time:</b> %s</li>" % delta2human(datetime.utcnow() - startedat))
         self.write("<li><b>Global counter:</b> %d</li>" % inmemcounter)
