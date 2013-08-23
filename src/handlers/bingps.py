@@ -377,7 +377,7 @@ class BinGps(BaseHandler):
                 offset += 32
                 if point is not None:
                     dt = unpack_from("<I", point, 3)[0] # TODO! Не самое элегантное решение
-                    logging.info("packet F2 datetime = %d" % dt)
+                    logging.info("packet F2 datetime = %d => %s" % (dt, datetime.fromtimestamp(dt).strftime('%Y-%m-%d %H:%M:%S')))
                     packer.add_point_to_packer(point, dt // 3600)
                     lastpoint = point
                     lastdt = dt
@@ -395,7 +395,7 @@ class BinGps(BaseHandler):
             elif pdata[offset + 1] == '\xF5':
                 point = pdata[offset:offset+32]
                 dt = unpack_from("<I", pdata, offset + 4)[0]  # TODO! Не самое элегантное решение
-                logging.info("packet F5 datetime = %d" % dt)
+                logging.info("packet F5 datetime = %d => %s" % (dt, datetime.fromtimestamp(dt).strftime('%Y-%m-%d %H:%M:%S')))
                 if lastdt >= dt:
                     logging.error("Datetime must be grow (%d -> %d) at %d offset" % (lastdt, dt, offset))
                 packer.add_point_to_packer(point, dt // 3600)
