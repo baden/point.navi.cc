@@ -107,13 +107,13 @@ class MainHandler(tornado.web.RequestHandler):
         self.write("<li><b>Server work time:</b> %s</li>" % delta2human(datetime.utcnow() - startedat))
         self.write("<li><b>Global counter:</b> %d</li>" % inmemcounter)
 
-        fall = fake.find_one({"_id": "counter"})
-        if fall is None:
-            fall = {"_id": "counter", "value": 0}
-        else:
-            fall["value"] += 1
-        self.write("<li><b>Mongo counter:</b> %s</li>" % repr(fall["value"]))
-        fake.save(fall)
+        # fall = fake.find_one({"_id": "counter"})
+        # if fall is None:
+        #     fall = {"_id": "counter", "value": 0}
+        # else:
+        #     fall["value"] += 1
+        # self.write("<li><b>Mongo counter:</b> %s</li>" % repr(fall["value"]))
+        # fake.save(fall)
 
         self.write("</ul><h2>Platform information</h2><ul>")
         self.write("<li><b>System:</b> %s</li>" % platform.system())
