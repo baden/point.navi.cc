@@ -365,6 +365,7 @@ class BinGps(BaseHandler):
         #packer = Packer()
         packer = BinGPS.packer(self.skey)
         offset = 0
+        lasthour = 0
         lastpoint = None
         while offset < plen:
             if pdata[offset] != '\xFF':
@@ -375,21 +376,34 @@ class BinGps(BaseHandler):
                 point = UpdatePoint(pdata, offset)
                 offset += 32
                 if point is not None:
-                    packer.add_point_to_packer(point)
+                    hour = unpack_from("<I", point, 3)[0] // 3600  # TODO! Не самое элегантное решение
+                    logging.info("packet F2 hour = %d" % hour)
+                    packer.add_point_to_packer(point, hour)
                     lastpoint = point
+                    lasthour = hour
                     # logging.info('=== Point=%s' % repr(point))
 
             elif pdata[offset + 1] == '\xF4':
                 point = pdata[offset:offset+32]
-                packer.add_point_to_packer(point)
+                hour = unpack_from("<I", pdata, offset + 3)[0] // 3600  # TODO! Не самое элегантное решение
+                logging.info("packet F4 hour = %d" % hour)
+                packer.add_point_to_packer(point, hour)
                 offset += 32
                 lastpoint = point
+                lasthour = hour
 
             elif pdata[offset + 1] == '\xF5':
                 point = pdata[offset:offset+32]
-                packer.add_point_to_packer(point)
+                hour = unpack_from("<I", pdata, offset + 4)[0] // 3600  # TODO! Не самое элегантное решение
+                logging.info("packet F5 hour = %d" % hour)
+                if lasthour >= hour:
+                    logging.error("Hour must be grow (%d -> %d) at %d offset" % (lasthour, hour, offset))
+                packer.add_point_to_packer(point, hour)
                 offset += 32
                 lastpoint = point
+                lasthour = hour
+            else:
+                logging.error("Wrong packet at %d offset" % offset)
 
         packer.save_packer()
 
