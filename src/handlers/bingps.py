@@ -365,7 +365,7 @@ class BinGps(BaseHandler):
         #packer = Packer()
         packer = BinGPS.packer(self.skey)
         offset = 0
-        lasthour = 0
+        lastdt = 0
         lastpoint = None
         while offset < plen:
             if pdata[offset] != '\xFF':
@@ -376,32 +376,32 @@ class BinGps(BaseHandler):
                 point = UpdatePoint(pdata, offset)
                 offset += 32
                 if point is not None:
-                    hour = unpack_from("<I", point, 3)[0] // 3600  # TODO! Не самое элегантное решение
-                    logging.info("packet F2 hour = %d" % hour)
-                    packer.add_point_to_packer(point, hour)
+                    dt = unpack_from("<I", point, 3)[0] # TODO! Не самое элегантное решение
+                    logging.info("packet F2 datetime = %d" % dt)
+                    packer.add_point_to_packer(point, dt // 3600)
                     lastpoint = point
-                    lasthour = hour
+                    lastdt = dt
                     # logging.info('=== Point=%s' % repr(point))
 
             elif pdata[offset + 1] == '\xF4':
                 point = pdata[offset:offset+32]
-                hour = unpack_from("<I", pdata, offset + 3)[0] // 3600  # TODO! Не самое элегантное решение
-                logging.info("packet F4 hour = %d" % hour)
-                packer.add_point_to_packer(point, hour)
+                dt = unpack_from("<I", pdata, offset + 3)[0] // 3600  # TODO! Не самое элегантное решение
+                logging.info("packet F4 datetime = %d" % dt)
+                packer.add_point_to_packer(point, dt // 3600)
                 offset += 32
                 lastpoint = point
-                lasthour = hour
+                lastdt = dt
 
             elif pdata[offset + 1] == '\xF5':
                 point = pdata[offset:offset+32]
-                hour = unpack_from("<I", pdata, offset + 4)[0] // 3600  # TODO! Не самое элегантное решение
-                logging.info("packet F5 hour = %d" % hour)
-                if lasthour >= hour:
-                    logging.error("Hour must be grow (%d -> %d) at %d offset" % (lasthour, hour, offset))
-                packer.add_point_to_packer(point, hour)
+                dt = unpack_from("<I", pdata, offset + 4)[0] // 3600  # TODO! Не самое элегантное решение
+                logging.info("packet F5 datetime = %d" % dt)
+                if lastdt >= dt:
+                    logging.error("Datetime must be grow (%d -> %d) at %d offset" % (lastdt, dt, offset))
+                packer.add_point_to_packer(point, dt // 3600)
                 offset += 32
                 lastpoint = point
-                lasthour = hour
+                lastdt = dt
             else:
                 logging.error("Wrong packet at %d offset" % offset)
 
