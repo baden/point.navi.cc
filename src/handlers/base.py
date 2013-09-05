@@ -26,6 +26,9 @@ class BaseHandler(RequestHandler):
 
         #logging.info()
 
+        self.msgs = []
+        self.dynamic = {}
+
         self.imei = self.get_argument("imei", None)
         #print dir(self)
         if self.imei in IMEI_BLACK_LIST:
@@ -40,25 +43,16 @@ class BaseHandler(RequestHandler):
         self.skey = system.key
 
         # Динамические данные: csq, vout, vin
-        dynamic = {"lastping": int(time())}
+        self.dynamic["lastping"] = int(time())
         csq = self.get_argument("csq", None)
         if csq is not None:
-            dynamic["csq"] = csq
+            self.dynamic["csq"] = csq
         vout = self.get_argument("vout", None)
         if vout is not None:
-            dynamic["vout"] = int(vout) / 1000.0
+            self.dynamic["vout"] = int(vout) / 1000.0
         vin = self.get_argument("vin", None)
         if vin is not None:
-            dynamic["vin"] = int(vin) / 1000.0
-
-        system.update_dynamic(**dynamic)
-        msg = {
-            "id": 0,
-            "message": "update_dynamic",
-            "skey": self.skey,
-            "dynamic": dynamic
-        }
-        self.application.publisher.send(msg)
+            self.dynamic["vin"] = int(vin) / 1000.0
 
         #TODO! Добавить обновление из self.get_arguments телефона и других "редко-изменяемых" параметров
         #TODO! Добавить обработку из self.get_arguments "часто-изменяемых" параметров
@@ -67,6 +61,15 @@ class BaseHandler(RequestHandler):
 
         #self.skey = System.skey_by_imei_or_create(self.imei)
         self.onpost(*args, **kwargs)
+
+        system.update_dynamic(**self.dynamic)
+        msg = {
+            "id": 0,
+            "message": "update_dynamic",
+            "skey": self.skey,
+            "dynamic": self.dynamic
+        }
+        self.application.publisher.send(msg)
 
     def get(self, *args, **kwargs):
         self.set_header('Access-Control-Allow-Origin', '*')
@@ -90,28 +93,30 @@ class BaseHandler(RequestHandler):
         self.system = system
         self.skey = system.key
 
+        self.dynamic = {}
+
         # Динамические данные: csq, vout, vin
-        dynamic = {"lastping": int(time())}
+        self.dynamic["lastping"] = int(time())
         csq = self.get_argument("csq", None)
         if csq is not None:
-            dynamic["csq"] = csq
+            self.dynamic["csq"] = csq
         vout = self.get_argument("vout", None)
         if vout is not None:
-            dynamic["vout"] = int(vout) / 1000.0
+            self.dynamic["vout"] = int(vout) / 1000.0
         vin = self.get_argument("vin", None)
         if vin is not None:
-            dynamic["vin"] = int(vin) / 1000.0
+            self.dynamic["vin"] = int(vin) / 1000.0
 
-        system.update_dynamic(**dynamic)
+        self.onget(*args, **kwargs)
+
+        system.update_dynamic(**self.dynamic)
         msg = {
             "id": 0,
             "message": "update_dynamic",
             "skey": self.skey,
-            "dynamic": dynamic
+            "dynamic": self.dynamic
         }
         self.application.publisher.send(msg)
-
-        self.onget(*args, **kwargs)
 
     def compute_etag(self):
         return None

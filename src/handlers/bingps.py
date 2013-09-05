@@ -68,7 +68,7 @@ PACK_F4 = '<BBBIIIHBBHHBHIBB'
 #                          ^ - D15: Локальная CRC
 assert(calcsize(PACK_F4) == 32)
 
-PACK_F5 = '<BBBBIIIHHHBBHBBBBBB'
+PACK_F5 = '<BBBBIIIHHBBBBBBBBBBBB'
 #           ^ - D0:B Заголовок (должен быть == 0xFF)
 #            ^ - D1:B Идентификатор пакета (должен быть == 0xC2)
 #             ^ - D2:B Тип точки   Причина фиксации точки (младшие 6 бит, бит 7 - фиксация без активных спутников.
@@ -234,23 +234,28 @@ def UpdatePoint(buffer, offset):
     dt = time.mktime(datestamp.timetuple())
 
     point = pack(
-        PACK_F4,
-        0xFF,                   # D0: Заголовок (должен быть == 0xFF)
-        0xF4,                   # D1: Идентификатор пакета (должен быть == 0xF4)
-        32,                     # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
-        dt,                     # D3: Дата+время
-        latitude,               # D4: Широта 1/10000 минут
-        longitude,              # D5: Долгота 1/10000 минут
-        speed,                  # D6: Скорость 1/100 узла
-        int(round(course/2)),   # D7: Направление/2 = 0..179
-        sats,                   # D8: Кол-во спутников 3..12
-        vout,                   # D9: Напряжение внешнего питания 1/100 B
-        vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
-        fsource,                # D11: Тип точки   Причина фиксации точки
-        0,                      # D12: Флаги
-        photo,                  # D13: Резерв
-        0,                      # D14: Резерв
-        0                       # D15: Локальная CRC (пока не используется)
+        PACK_F5,
+        0xFF,                   # B: Заголовок (должен быть == 0xFF)
+        0xF5,                   # B: Идентификатор пакета (должен быть == 0xF4)
+        fsource,                # B: Тип точки   Причина фиксации точки
+        sats,                   # B: Кол-во спутников 3..12
+        dt,                     # I: Дата+время
+        latitude,               # I: Широта 1/10000 минут
+        longitude,              # I: Долгота 1/10000 минут
+        speed,                  # H: Скорость 1/100 узла
+        0,                      # H: Высота над уровнем моря, м
+        int(round(course/2)),   # B: Направление/2 = 0..179
+        (vout/10) >> 2,         # B: Напряжение внешнего питания 1/10 B  (8 старших бит из 10ти)
+        vin >> 2,               # B: Напряжение внутреннего аккумулятора 1/100 B (8 старших бит из 10ти)
+        0,                      # B: АЦП1 (температура)
+        photo >> 3,             # B: АЦП2 (уровень топлива)
+        ((vout/10) & 3) + ((vin & 3) << 2) + (0 << 4) + (((photo/2) & 3) << 6), # B: Младшие пары бит
+        0,                      # B: Резерв
+        0,                      # B: Резерв
+        0,                      # B: Резерв
+        0,                      # B: Резерв
+        0,                      # B: Резерв
+        0                       # B: Локальная CRC (пока не используется)
     )
     # point = {
     #     'time': time.mktime(datestamp.timetuple()),
@@ -261,29 +266,34 @@ def UpdatePoint(buffer, offset):
 # TODO!!! Переделать на 0xF5
 def point_to_dict(point):
     (
-        head,                   # D0: Заголовок (должен быть == 0xFF)
-        id,                     # D1: Идентификатор пакета (должен быть == 0xF4)
-        len,                    # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (только 32)
-        dt,                     # D3: Дата+время (unixtime)
-        latitude,               # D4: Широта 1/10000 минут
-        longitude,              # D5: Долгота 1/10000 минут
-        speed,                  # D6: Скорость 1/100 узла
-        course,                 # D7: Направление/2 = 0..179
-        sats,                   # D8: Кол-во спутников 3..12
-        vout,                   # D9: Напряжение внешнего питания 1/100 B
-        vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
-        fsource,                # D11: Тип точки   Причина фиксации точки
-        flags,                  # D12: Флаги
-        res1,                   # D13: Резерв
-        res2,                   # D14: Резерв
-        crc                     # D15: Локальная CRC (пока не используется)
-    ) = unpack(PACK_F4, point)
+        head,                   # B: Заголовок (должен быть == 0xFF)
+        id,                     # B: Идентификатор пакета (должен быть == 0xF4)
+        fsource,                # B: Тип точки   Причина фиксации точки
+        sats,                   # B: Кол-во спутников 3..12
+        dt,                     # I: Дата+время (unixtime)
+        latitude,               # I: Широта 1/10000 минут
+        longitude,              # I: Долгота 1/10000 минут
+        speed,                  # H: Скорость 1/100 узла
+        altitude,               # H: Высота над уровнем моря, м
+        course,                 # B: Направление/2 = 0..179
+        vout,                   # B: Напряжение внешнего питания 1/10 B  (старшие 8 бит из 10ти)
+        vin,                    # B: Напряжение внутреннего аккумулятора 1/100 B (старшие 8 бит из 10ти)
+        adc1,                   # B: АЦП1 (температура)  (старшие 8 бит из 10ти)
+        adc2,                   # B: АЦП2 (уровень топлива)  (старшие 8 бит из 10ти)
+        lsbs,                   # B: Младние пары бит предыдущих 4х полей
+        res1,                   # B: Резерв
+        res2,                   # B: Резерв
+        res3,                   # B: Резерв
+        res4,                   # B: Резерв
+        res5,                   # B: Резерв
+        crc                     # B: Локальная CRC (пока не используется)
+    ) = unpack(PACK_F5, point)
     latitude = latitude / 600000.0
     longitude = longitude / 600000.0
     speed = speed * 1.852 / 100.0
     course = course * 2
-    vout = vout / 100.0
-    vin = vin / 100.0
+    vout = (vout * 4 + (lsbs & 3)) / 100.0;
+    vin = (vin * 4 + ((lsbs >> 2) & 3)) / 100.0
     return {
         'dt': dt,
         'latitude': latitude,
@@ -294,8 +304,7 @@ def point_to_dict(point):
         'vout': vout,
         'vin': vin,
         'fsource': fsource,
-        'fuel': int(res1 / 2),
-        'flags': flags
+        'fuel': int(res1 / 2)
     }
 #tornado.web import Application, RequestHandler, asynchronous
 
@@ -376,7 +385,7 @@ class BinGps(BaseHandler):
                 point = UpdatePoint(pdata, offset)
                 offset += 32
                 if point is not None:
-                    dt = unpack_from("<I", point, 3)[0] # TODO! Не самое элегантное решение
+                    dt = unpack_from("<I", point, 4)[0] # TODO! Не самое элегантное решение
                     logging.info("packet F2 datetime = %d => %s" % (dt, datetime.fromtimestamp(dt).strftime('%Y-%m-%d %H:%M:%S')))
                     packer.add_point_to_packer(point, dt // 3600)
                     lastpoint = point
@@ -408,24 +417,26 @@ class BinGps(BaseHandler):
         packer.save_packer()
 
         if lastpoint is not None:
-            asdict = point_to_dict(lastpoint)
-            #system.update_dynamic(lastlat = asdict['latitude'], lastlon = asdict['longitude'], sats = asdict['sats'])
-            self.system.update_dynamic(**asdict)
-            msg = {
-                "id": 0,
-                "message": "update_dynamic",
-                "skey": self.skey,
-                "dynamic": asdict
-            }
-            self.application.publisher.send(msg)
+            # asdict = point_to_dict(lastpoint)
 
-            msg = {
-                "id": 0,
-                "message": "last_update",
-                "skey": self.skey,
-                "point": asdict
-            }
-            self.application.publisher.send(msg)
+            self.dynamic.update(point_to_dict(lastpoint))
+            #system.update_dynamic(lastlat = asdict['latitude'], lastlon = asdict['longitude'], sats = asdict['sats'])
+            # self.system.update_dynamic(**asdict)
+            # msg = {
+            #     "id": 0,
+            #     "message": "update_dynamic",
+            #     "skey": self.skey,
+            #     "dynamic": asdict
+            # }
+            # self.application.publisher.send(msg)
+
+            # msg = {
+            #     "id": 0,
+            #     "message": "last_update",
+            #     "skey": self.skey,
+            #     "point": asdict
+            # }
+            # self.application.publisher.send(msg)
 
         for l in sinform.sinform_getall(self.skey):
             self.write("%s\r\n" % str(l))
